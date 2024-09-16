@@ -79,6 +79,27 @@ ping 10.0.0.2
 ```
 ... on the cloud server.
 # Further configuration on the cloud server to host a website
-To host a website for example an instance of `nginx` you have to do some further configuration:
+To host a website for example an instance of `nginx` you have to do some further configuration on the cloud server, you may have to install `iptables` depending on you Linux distribution.
+```
+iptables -P FORWARD DROP
+iptables -A FORWARD -i eth0 -o wg0 -p tcp --syn --dport 80 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A FORWARD -i eth0 -o wg0 -p tcp --syn --dport 443 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A FORWARD -i eth0 -o wg0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i wg0 -o eth0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to-destination 10.0.0.2
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j DNAT --to-destination 10.0.0.2
+iptables -t nat -A POSTROUTING -o wg0 -p tcp --dport 80 -d 10.0.0.2 -j SNAT --to-source 10.0.0.1
+iptables -t nat -A POSTROUTING -o wg0 -p tcp --dport 443 -d 10.0.0.2 -j SNAT --to-source 10.0.0.1
+```
+Be aware that you may have to change the interface name `eth0` to something like `ens7` and the IP-addresses may differ. To make the config persistend install the following packages and execute the commands:
+```
+apt install netfilter-persistent
+netfilter-persistent save
+apt install iptables-persistent
+systemctl enable netfilter-persistent
+```
 
-
+# Remarks
+Your IPv4-address of you wireguard network must differ from you IPv4-Address of your local network.
+This guide is based on [this Reddit post](https://www.reddit.com/r/unRAID/comments/10vx69b/ultimate_noob_guide_how_to_bypass_cgnat_using/?show=original)
+Some configuration is also from [here](https://gist.github.com/Quick104/d6529ce0cf2e6f2e5b94c421a388318b)
