@@ -98,8 +98,19 @@ netfilter-persistent save
 apt install iptables-persistent
 systemctl enable netfilter-persistent
 ```
-
+# Firewall settings on cloud server (Ubuntu)
+Install `ufw`:
+```
+apt install ufw
+```
+Enable firewall and open wireguard port `55107`:
+```
+ufw allow 55107
+ufw enable
+ufw status
+```
 # Remarks
 Your IPv4-address of you wireguard network must differ from you IPv4-Address of your local network.
 This guide is based on [this Reddit post](https://www.reddit.com/r/unRAID/comments/10vx69b/ultimate_noob_guide_how_to_bypass_cgnat_using/?show=original)
 Some configuration is also from [here](https://gist.github.com/Quick104/d6529ce0cf2e6f2e5b94c421a388318b)
+Ubuntu firewall [guide](https://linuxconfig.org/ubuntu-24-04-firewall-a-quick-guide)
