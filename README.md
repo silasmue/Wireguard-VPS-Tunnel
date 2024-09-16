@@ -66,7 +66,7 @@ Address = 10.0.0.2
 [Peer]
 PublicKey = <public key of the cloud server>
 AllowedIPs = 10.0.0.1/32
-Endpoint = 1.2.3.4:55107
+Endpoint = <your public IPv4-address of the cloud server>:55107
 PersistentKeepalive = 25
 ```
 If you completed this section and the cloud server section, you should be able to ping between your two instances.
