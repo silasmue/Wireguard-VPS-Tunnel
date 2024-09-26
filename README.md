@@ -98,6 +98,14 @@ netfilter-persistent save
 apt install iptables-persistent
 systemctl enable netfilter-persistent
 ```
+
+## Host a Minecraft server
+If you run a VM to host a Minecraft server you have to add the following configuration:
+```
+iptables -t nat -A PREROUTING -p tcp -d <public-ip> --dport 25565 -j DNAT --to-destination 10.0.0.2:25565
+iptables -t nat -A POSTROUTING -d 10.0.0.2 -p tcp --dport 25565 -j MASQUERADE  
+```
+You may change some firewall settings to allow port `25565`.
 # Firewall settings on cloud server (Ubuntu)
 Install `ufw`:
 ```
