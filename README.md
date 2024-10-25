@@ -103,8 +103,11 @@ systemctl enable netfilter-persistent
 If you run a VM to host a Minecraft server you have to add the following configuration:
 ```
 iptables -t nat -A PREROUTING -p tcp -d <public-ip> --dport 25565 -j DNAT --to-destination 10.0.0.2:25565
-iptables -t nat -A POSTROUTING -d 10.0.0.2 -p tcp --dport 25565 -j MASQUERADE  
+iptables -t nat -A POSTROUTING -d 10.0.0.2 -p tcp --dport 25565 -j MASQUERADE
+iptables -A FORWARD -i eth0 -o wg0 --dst 10.0.0.2 -p tcp --dport 25565 -j ACCEPT
+
 ```
+In some cases it maybe better to use the rules from above instead of `MASQUERADE` or to introduce static routing to not mask the IP-addresses of the users.
 You may change some firewall settings to allow port `25565`.
 # Firewall settings on cloud server (Ubuntu)
 Install `ufw`:
