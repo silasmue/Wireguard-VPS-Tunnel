@@ -19,6 +19,10 @@ Write private key in wireguard config `/etc/wireguard/wg0.conf` and generate pub
 ```
 wg genkey | sudo tee -a /etc/wireguard/wg0.conf | wg pubkey | tee /etc/wireguard/publickey
 ```
+Optional you can create a `presharedkey` (psk) one one of the devices. This key is the **same** for both devices, it is required to make the tunnel post-quantum secure:
+```
+wg genpsk > presharedkey
+```
 After that edit the wireguard config `/etc/wireguard/wg0.conf` with you prefered editor. The config should look like the following:
 ```
 [Interface]
@@ -28,6 +32,7 @@ Address = 10.0.0.1
 
 [Peer]
 PublicKey = <public key of homeserver, see next section>
+PresharedKey = <content of presharedkey>
 AllowedIPs = 10.0.0.2/32
 ```
 In the next step you have to uncommend following line in `/etc/sysctl.conf`:
@@ -65,6 +70,7 @@ Address = 10.0.0.2
 
 [Peer]
 PublicKey = <public key of the cloud server>
+PresharedKey = <content of presharedkey>
 AllowedIPs = 10.0.0.1/32
 Endpoint = <your public IPv4-address of the cloud server>:55107
 PersistentKeepalive = 25
@@ -78,6 +84,10 @@ ping 10.0.0.1
 ping 10.0.0.2
 ```
 ... on the cloud server.
+
+## OPNSense
+Instead of a gateway virtual machine you can also use OPNSense to manage the tunnel. The following two screenshots show how you need to configure the tunnel there:
+
 # Further configuration on the cloud server to host a website
 To host a website for example an instance of `nginx` you have to do some further configuration on the cloud server, you may have to install `iptables` depending on you Linux distribution.
 ```
