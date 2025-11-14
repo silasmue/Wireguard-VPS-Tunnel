@@ -85,11 +85,6 @@ ping 10.0.0.2
 ```
 ... on the cloud server.
 
-## OPNSense
-Instead of a gateway virtual machine you can also use OPNSense to manage the tunnel. The following two screenshots show how you need to configure the tunnel there:
-![alt text](wg-instance.png "Instance")
-![alt text](wg-peer.png "Peer")
-On the peer select the previousely created instance in the dropdown.
 # Further configuration on the cloud server to host a website
 To host a website for example an instance of `nginx` you have to do some further configuration on the cloud server, you may have to install `iptables` depending on you Linux distribution.
 ```
@@ -137,3 +132,40 @@ Your IPv4-address of you wireguard network must differ from you IPv4-Address of 
 This guide is based on [this Reddit post](https://www.reddit.com/r/unRAID/comments/10vx69b/ultimate_noob_guide_how_to_bypass_cgnat_using/?show=original)
 Some configuration is also from [here](https://gist.github.com/Quick104/d6529ce0cf2e6f2e5b94c421a388318b)
 Ubuntu firewall [guide](https://linuxconfig.org/ubuntu-24-04-firewall-a-quick-guide)
+
+# Alternative Config
+In this alternative config is the following scenario documented:
+```
+┌───────────────────────────────┐
+│             VPS               │
+│         (public IP)           │
+└─────────────┬─┬───────────────┘
+              | │ Wireguard Tunnel
+              | │ all udp/tcp traffic except :22/tcp :55107/udp
+               ▼
+┌───────────────────────────────┐
+│        OPNsense Firewall      │
+│        (routing / NAT)        │
+└───────────────┬───────────────┘
+                │
+                │  HTTP / HTTPS / whatever you want
+                ▼
+┌───────────────────────────────┐
+│       NGINX Reverse Proxy     │
+│       (virtual hosts, SSL)    │
+└───────────────────────────────┘
+```
+*This graphic is generated with the help of ChatGPT 5.1 Thinking*
+
+Here all traffic except `:22/tcp` (ssh) and `:55107/udp` (wireguard) is forwarded without masking to an NGINX revers proxy behind an OPNSense firewall. The Tunnel is going from the VPS to the OPNSense firewall, the firewall handles the forwarding of allowed traffic to the reverse proxy.
+
+## Wireguard VPS setup
+See above
+## OPNSense VPN setup
+## OPNSense
+Instead of a gateway virtual machine you can also use OPNSense to manage the tunnel. The following two screenshots show how you need to configure the tunnel there:
+![alt text](wg-instance.png "Instance")
+![alt text](wg-peer.png "Peer")
+On the peer select the previousely created instance in the dropdown.
+## IPTables rules
+
