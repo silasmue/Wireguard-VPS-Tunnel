@@ -87,7 +87,9 @@ ping 10.0.0.2
 
 ## OPNSense
 Instead of a gateway virtual machine you can also use OPNSense to manage the tunnel. The following two screenshots show how you need to configure the tunnel there:
-
+![alt text](wg-instance.png "Instance")
+![alt text](wg-peer.png "Peer")
+On the peer select the previousely created instance in the dropdown.
 # Further configuration on the cloud server to host a website
 To host a website for example an instance of `nginx` you have to do some further configuration on the cloud server, you may have to install `iptables` depending on you Linux distribution.
 ```
